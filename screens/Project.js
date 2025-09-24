@@ -1,18 +1,20 @@
 // Pantalla "Proyectos": ejemplo de tarjeta con entrada animada y soporte de scroll.
 import React from 'react';
-import { Text, StyleSheet, View } from 'react-native';
+import { Text, StyleSheet, View, Platform, useWindowDimensions } from 'react-native';
 import Screen from '../components/Screen';
 import FadeInView from '../components/FadeInView';
 
 const Project = () => {
-  return (
+	const { width } = useWindowDimensions();
+	const isDesktop = Platform.OS === 'web' && width >= 1024;
+	return (
     <Screen scroll>
       <FadeInView>
-        <Text style={styles.title}>Proyectos</Text>
+				<Text style={[styles.title, isDesktop && styles.titleDesktop]}>Proyectos</Text>
       </FadeInView>
       <FadeInView delay={100}>
-        <View style={styles.card}>
-          <Text style={styles.text}>Aquí se mostrarán los proyectos realizados por el ingeniero de sistemas.</Text>
+				<View style={[styles.card, isDesktop && styles.cardDesktop]}>
+					<Text style={[styles.text, isDesktop && styles.textDesktop]}>Aquí se mostrarán los proyectos realizados por el ingeniero de sistemas.</Text>
         </View>
       </FadeInView>
     </Screen>
@@ -27,6 +29,7 @@ const styles = StyleSheet.create({
 		marginBottom: 16,
 		letterSpacing: 1,
 	},
+	titleDesktop: { fontSize: 30 },
 	text: {
 		fontSize: 16,
 		color: '#b0b0b0',
@@ -35,6 +38,7 @@ const styles = StyleSheet.create({
 		marginHorizontal: 8,
 		marginBottom: 8,
 	},
+	textDesktop: { fontSize: 18, lineHeight: 26 },
 	card: {
 		backgroundColor: '#22232b',
 		borderRadius: 12,
@@ -48,6 +52,7 @@ const styles = StyleSheet.create({
 		width: '100%',
 		maxWidth: 350,
 	},
+	cardDesktop: { maxWidth: 560 },
 });
 
 export default Project;

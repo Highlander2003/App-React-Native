@@ -2,10 +2,12 @@
 // Props: label, onPress, disabled, style, textStyle.
 // Mejora accesibilidad/consistencia y evita repetir estilos de botones.
 import React, { useRef } from 'react';
-import { Text, TouchableOpacity, Animated, StyleSheet } from 'react-native';
+import { Text, TouchableOpacity, Animated, StyleSheet, Platform, useWindowDimensions } from 'react-native';
 
 export default function PrimaryButton({ label, onPress, style, textStyle, disabled }) {
   const pressAnim = useRef(new Animated.Value(1)).current;
+  const { width } = useWindowDimensions();
+  const isDesktop = Platform.OS === 'web' && width >= 900;
 
   const handlePressIn = () => {
     Animated.spring(pressAnim, { toValue: 0.96, friction: 4, useNativeDriver: true }).start();
@@ -22,9 +24,9 @@ export default function PrimaryButton({ label, onPress, style, textStyle, disabl
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         disabled={disabled}
-        style={[styles.button, disabled && styles.disabled]}
+        style={[styles.button, isDesktop && styles.buttonDesktop, disabled && styles.disabled]}
       >
-        <Text style={[styles.text, textStyle]}>{label}</Text>
+        <Text style={[styles.text, isDesktop && styles.textDesktop, textStyle]}>{label}</Text>
       </TouchableOpacity>
     </Animated.View>
   );
@@ -45,11 +47,20 @@ const styles = StyleSheet.create({
     elevation: 4,
     minWidth: 200,
   },
+  buttonDesktop: {
+    minWidth: 260,
+    paddingVertical: 16,
+    // RN Web: cursor pointer
+    cursor: 'pointer',
+  },
   text: {
     color: '#00c6cf',
     fontSize: 17,
     fontWeight: 'bold',
     letterSpacing: 1,
+  },
+  textDesktop: {
+    fontSize: 18,
   },
   disabled: {
     opacity: 0.6,

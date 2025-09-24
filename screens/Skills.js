@@ -1,7 +1,7 @@
 // Pantalla "Habilidades": lista de barras de progreso animadas.
 // Nota: `useNativeDriver: false` porque animamos width (propiedad de layout).
 import React, { useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, Animated } from 'react-native';
+import { View, Text, StyleSheet, Animated, Platform, useWindowDimensions } from 'react-native';
 import Screen from '../components/Screen';
 import FadeInView from '../components/FadeInView';
 
@@ -16,10 +16,12 @@ const skillsData = [
 ];
 
 const Skills = () => {
+	const { width } = useWindowDimensions();
+	const isDesktop = Platform.OS === 'web' && width >= 1024;
 	return (
 		<Screen scroll>
 			<FadeInView>
-				<Text style={styles.title}>Mis Habilidades</Text>
+				<Text style={[styles.title, isDesktop && styles.titleDesktop]}>Mis Habilidades</Text>
 			</FadeInView>
 			{skillsData.map((skill, idx) => (
 				<SkillBar key={idx} name={skill.name} level={skill.level} delay={idx * 150} />
@@ -66,6 +68,7 @@ const styles = StyleSheet.create({
 		marginBottom: 20,
 		color: '#e0e0e0',
 	},
+	titleDesktop: { fontSize: 28 },
 	skillContainer: {
 		width: '100%',
 		marginBottom: 18,

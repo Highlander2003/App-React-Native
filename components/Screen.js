@@ -3,20 +3,31 @@
 // - Prop `scroll` permite pantallas con contenido largo (usa ScrollView).
 import React from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import useBreakpoint, { getContainerMaxWidth } from '../utils/useBreakpoint';
 
 export default function Screen({ children, scroll = false, contentStyle, style }) {
+  const { width, isWeb, name } = useBreakpoint();
+  const maxWidth = getContainerMaxWidth(width);
+
+  const containerStyle = [
+    styles.content,
+    // Centramos y limitamos ancho en pantallas grandes
+    isWeb && { alignSelf: 'center', width: '100%', maxWidth },
+    // Ajuste de padding según breakpoint
+    name === 'sm' ? styles.padSm : name === 'md' ? styles.padMd : styles.padLg,
+    contentStyle,
+  ];
+
   if (scroll) {
     return (
       <SafeAreaView style={[styles.safe, style]}>
-        <ScrollView contentContainerStyle={[styles.content, contentStyle]}>
-          {children}
-        </ScrollView>
+        <ScrollView contentContainerStyle={containerStyle}>{children}</ScrollView>
       </SafeAreaView>
     );
   }
   return (
     <SafeAreaView style={[styles.safe, style]}>
-      <View style={[styles.content, contentStyle]}>{children}</View>
+      <View style={containerStyle}>{children}</View>
     </SafeAreaView>
   );
 }
@@ -28,6 +39,8 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
   },
+  padSm: { paddingHorizontal: 16, paddingVertical: 16 },
+  padMd: { paddingHorizontal: 20, paddingVertical: 18 },
+  padLg: { paddingHorizontal: 24, paddingVertical: 20 },
 });

@@ -1,7 +1,7 @@
 // Pantalla de tarjetas que demuestran diseño responsivo (flex + porcentajes)
 // y diseño adaptativo (useWindowDimensions para cambiar el layout >= 600px).
 import React from 'react';
-import { View, Text, StyleSheet, Image, useWindowDimensions } from 'react-native';
+import { View, Text, StyleSheet, Image, useWindowDimensions, Platform } from 'react-native';
 import Screen from '../components/Screen';
 import FadeInView from '../components/FadeInView';
 
@@ -12,6 +12,7 @@ import adaptiveIcon from '../assets/adaptive-icon.png';
 export default function ResponsiveCards() {
   const { width } = useWindowDimensions();
   const isTablet = width >= 600; // Punto de corte adaptativo
+  const isDesktop = Platform.OS === 'web' && width >= 1024;
 
   // Contenido de las 3 tarjetas solicitado
   const cards = [
@@ -42,7 +43,7 @@ export default function ResponsiveCards() {
     // Usamos scroll para permitir ver todo en pantallas pequeñas
     <Screen scroll contentStyle={[styles.container, isTablet ? styles.containerTablet : styles.containerMobile]}>
       <FadeInView>
-        <Text style={styles.header}>Tarjetas Responsivas y Adaptativas</Text>
+        <Text style={[styles.header, isDesktop && styles.headerDesktop]}>Tarjetas Responsivas y Adaptativas</Text>
       </FadeInView>
       <View style={styles.grid}>
         {cards.map((c, idx) => (
@@ -82,6 +83,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom: 8,
   },
+  headerDesktop: { fontSize: 26 },
   grid: {
     width: '100%',
     flexDirection: 'row',
