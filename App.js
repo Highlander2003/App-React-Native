@@ -5,6 +5,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AboutMe from './screens/AboutMe';
 import Project from './screens/Project';
+import ResponsiveCards from './screens/ResponsiveCards';
 import Skills from './screens/Skills';
 // Componentes reutilizables para mantener la UI consistente y simple
 import Screen from './components/Screen';
@@ -35,6 +36,7 @@ function HomeScreen({ navigation }) {
           { label: 'Sobre mí', screen: 'AboutMe' },
           { label: 'Proyectos', screen: 'Project' },
           { label: 'Habilidades', screen: 'Skills' },
+          { label: 'Tarjetas Responsivas', screen: 'ResponsiveCards' },
         ].map((btn) => (
           // PrimaryButton aplica feedback de presión y estilo consistente
           <PrimaryButton key={btn.screen} label={btn.label} onPress={() => navigation.navigate(btn.screen)} />
@@ -57,6 +59,7 @@ export default function App() {
         <Stack.Screen name="AboutMe" component={AboutMe} options={{ title: 'Sobre mí' }} />
         <Stack.Screen name="Project" component={Project} options={{ title: 'Proyectos' }} />
         <Stack.Screen name="Skills" component={Skills} options={{ title: 'Habilidades' }} />
+        <Stack.Screen name="ResponsiveCards" component={ResponsiveCards} options={{ title: 'Tarjetas' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );

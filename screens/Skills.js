@@ -12,7 +12,7 @@ const skillsData = [
 	{ name: 'Seguridad informática', level: 0.75 },
 	{ name: 'Desarrollo móvil', level: 0.9 },
 	{ name: 'Gestión de proyectos', level: 0.7 },
-	{ name: 'Cloud Computing', level: 0.65 },
+	{ name: 'Linux', level: 0.9 },
 ];
 
 const Skills = () => {
