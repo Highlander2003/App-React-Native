@@ -141,25 +141,60 @@ npm run optimize:images
 
 ## 📱 Pantallas de la Aplicación
 
-1. **Home**: Pantalla de bienvenida con navegación principal
-2. **Sobre Mí**: Información personal y profesional
-3. **Proyectos**: Showcase de proyectos realizados
-4. **Habilidades**: Lista de competencias técnicas
-5. **Tarjetas Responsivas**: Demostración de diseño adaptativo
-6. **Cámara (Sensor)**:
-   - Solicita permisos de cámara y muestra preview en vivo usando `CameraView`.
-   - Permite alternar entre cámara frontal/trasera y encender la linterna (torch) en dispositivos compatibles.
-   - Captura fotos y muestra una miniatura con opción para descartar.
-   - Notas:
-     - En Web, el control de linterna puede no estar disponible según el navegador.
-     - Permisos: iOS requiere `NSCameraUsageDescription`; Android requiere `CAMERA` (ya configurados en `app.json`).
-7. **Acelerómetro (Sensor)**:
-   - En Android/iOS usa `expo-sensors` para leer aceleración en x, y, z.
-   - En Web utiliza el evento `devicemotion` del navegador con permiso explícito cuando es necesario (iOS/Safari).
-   - Visual: una “bolita” que se desplaza dentro de un cuadro según la inclinación del dispositivo.
-   - Fondo de pantalla dinámico: cambia de color según el eje dominante y su dirección:
-     - X+ rojo, X- azul, Y+ naranja, Y- verde; fondo base cuando está casi plano.
-   - Controles: interruptor para pausar/reanudar y botones para ajustar el intervalo de actualización.
+1. **Home** (Inicio)
+   - Descripción: Punto de entrada con presentación breve y navegación a las secciones.
+   - UI y UX:
+     - Layout responsivo: grid de 1, 2 o 3 columnas según breakpoint (móvil, tablet, desktop).
+     - Tipografía y ancho de texto adaptativos.
+   - Librerías y funciones:
+     - `useBreakpoint` (custom): detecta ancho y devuelve nombre de breakpoint.
+     - `Screen`, `PrimaryButton`, `FadeInView`: componentes reutilizables para layout y animación.
+
+2. **Sobre Mí**
+   - Descripción: Información personal y profesional, enfoque en claridad y legibilidad.
+   - UI/Animación: uso de `FadeInView` para entradas suaves.
+   - Librerías: React Native base.
+
+3. **Proyectos**
+   - Descripción: Showcase de proyectos con estructura simple y clara.
+   - Librerías: React Native base; estilos modulares.
+
+4. **Habilidades**
+   - Descripción: Lista de competencias técnicas con barras de progreso animadas.
+   - Animación: `Animated.timing` y `Animated.parallel` (JS driver para web, nativo en dispositivos).
+   - Librerías: React Native `Animated`.
+
+5. **Tarjetas Responsivas**
+   - Descripción: Ejemplo de diseño adaptativo con tarjetas; aprovecha `useBreakpoint`.
+   - Librerías: React Native base + hook `useBreakpoint`.
+
+6. **Cámara (Sensor)** — `screens/CameraSensor.js`
+   - Funcionalidad:
+     - Solicita permisos de cámara y muestra preview en vivo con `CameraView` (Expo SDK 54).
+     - Alterna entre cámara frontal/trasera y activa linterna (torch) cuando el dispositivo lo soporta.
+     - Captura fotos; tras capturar, abre una previsualización a pantalla completa con opciones de Cerrar/Descartar.
+     - Miniatura persistente de la última foto con acciones “Ver” y “Descartar”.
+   - Librerías usadas:
+     - `expo-camera` (CameraView): acceso a la cámara y torch.
+     - `react-native-safe-area-context`: contenedor `Screen` con áreas seguras.
+   - Permisos y configuración:
+     - iOS: `NSCameraUsageDescription` en `app.json`.
+     - Android: permiso `CAMERA` en `app.json`.
+   - Compatibilidad Web:
+     - La disponibilidad de torch/flash depende del navegador. La preview y captura funcionan si el navegador soporta MediaDevices.
+
+7. **Acelerómetro (Sensor)** — `screens/AccelerometerSensor.js`
+   - Funcionalidad:
+     - Lectura de aceleración x, y, z.
+     - Visual interactiva: una “bolita” que se mueve según inclinación del dispositivo.
+     - Fondo de pantalla dinámico que cambia de color según eje dominante y dirección (X+/X-/Y+/Y-).
+     - Controles de suscripción (On/Off) y frecuencia con botones +/- (intervalo en ms).
+   - Librerías y APIs usadas:
+     - Nativo (Android/iOS): `expo-sensors` (Accelerometer.addListener, setUpdateInterval).
+     - Web: evento `devicemotion` del navegador con permiso solicitado en iOS/Safari (DeviceMotionEvent.requestPermission).
+   - Notas de compatibilidad:
+     - Desktop y algunos navegadores móviles pueden no emitir `devicemotion` o requerir interacción del usuario.
+     - El botón “Activar sensor (permiso)” aparece en Web cuando hay que conceder permisos.
 
 ## 🎨 Sistema de Diseño
 
@@ -199,6 +234,21 @@ spacing: {
 
 ### Notas de compatibilidad
 - Web puede limitar acceso a características de hardware (torch/flash, devicemotion). Prueba en dispositivo real para validar comportamiento.
+
+## 🧩 Componentes reutilizables principales
+
+- `Screen`: contenedor con `SafeAreaView` (react-native-safe-area-context), layout consistente entre pantallas.
+- `PrimaryButton`: botón principal con animación de presión y estilos unificados.
+- `FadeInView`: animación de entrada (fade + translateY) reutilizable para mejorar la percepción de fluidez.
+
+## 🧪 Consejos de prueba
+
+- Cámara:
+  - En Expo Go, concede permisos al abrir la pantalla.
+  - Si torch no funciona en Web, prueba en un dispositivo Android/iOS.
+- Acelerómetro:
+  - En Web móvil, pulsa “Activar sensor (permiso)” si aparece.
+  - Desktop rara vez publica devicemotion: prueba en teléfono físico para validar movimiento y cambio de color de fondo.
 
 ## 📝 Licencia
 
