@@ -1,6 +1,6 @@
 // Punto de entrada de la app. Aquí configuramos navegación y precarga de assets.
 import React from 'react';
-import { Text, StyleSheet } from 'react-native';
+import { Text, StyleSheet, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import AboutMe from './screens/AboutMe';
@@ -13,6 +13,7 @@ import AccelerometerSensor from './screens/AccelerometerSensor';
 import Screen from './components/Screen';
 import FadeInView from './components/FadeInView';
 import PrimaryButton from './components/PrimaryButton';
+import useBreakpoint from './utils/useBreakpoint';
 // Hook que precarga y cachea assets manteniendo visible el SplashScreen hasta que todo esté listo
 import usePreloadAssets from './utils/usePreloadAssets';
 // Assets estáticos a precargar (mejora la primera renderización)
@@ -23,17 +24,39 @@ import adaptiveIcon from './assets/adaptive-icon.png';
 const Stack = createStackNavigator();
 
 function HomeScreen({ navigation }) {
-  // Pantalla de inicio minimalista con animaciones suaves y botones primarios
+  const { name } = useBreakpoint();
+  const isGrid = name !== 'sm';
+  const columns = name === 'md' ? 2 : name === 'lg' || name === 'xl' ? 3 : 1;
+  const itemWidth = columns === 1 ? '100%' : columns === 2 ? '48%' : '31%';
+
+  const descriptionSize = name === 'sm' ? 18 : name === 'md' ? 20 : 22;
+  const descriptionMaxW = name === 'sm' ? '100%' : 780;
+
+  const buttonContainerStyle = [
+    styles.buttonContainer,
+    isGrid && {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+      alignItems: 'stretch',
+      gap: 16,
+    },
+  ];
+
+  const itemStyle = [{ width: itemWidth }];
+
   return (
-    <Screen>
+    <Screen contentStyle={{ alignItems: 'stretch', justifyContent: 'flex-start' }}>
       {/* Texto de bienvenida con animación de entrada */}
       <FadeInView>
-        <Text style={styles.description}>
-          Bienvenido a mi portafolio como Ingeniero de Sistemas. Explora para conocer más sobre mí, mis proyectos y habilidades.
-        </Text>
+        <View style={{ alignSelf: 'center', maxWidth: descriptionMaxW }}>
+          <Text style={[styles.description, { fontSize: descriptionSize }]}>
+            Bienvenido a mi portafolio como Ingeniero de Sistemas. Explora para conocer más sobre mí, mis proyectos y habilidades.
+          </Text>
+        </View>
       </FadeInView>
-      {/* Grupo de botones con estilo unificado */}
-      <FadeInView style={styles.buttonContainer}>
+      {/* Grupo de botones con estilo unificado y layout responsivo */}
+      <FadeInView style={buttonContainerStyle}>
         {[
           { label: 'Sobre mí', screen: 'AboutMe' },
           { label: 'Proyectos', screen: 'Project' },
@@ -42,8 +65,12 @@ function HomeScreen({ navigation }) {
           { label: 'Cámara (Sensor)', screen: 'CameraSensor' },
           { label: 'Acelerómetro (Sensor)', screen: 'AccelerometerSensor' },
         ].map((btn) => (
-          // PrimaryButton aplica feedback de presión y estilo consistente
-          <PrimaryButton key={btn.screen} label={btn.label} onPress={() => navigation.navigate(btn.screen)} />
+          <PrimaryButton
+            key={btn.screen}
+            label={btn.label}
+            onPress={() => navigation.navigate(btn.screen)}
+            style={itemStyle}
+          />
         ))}
       </FadeInView>
     </Screen>

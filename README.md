@@ -9,6 +9,7 @@ Una aplicación móvil de portafolio personal desarrollada con React Native y Ex
 - 🎨 **Tema oscuro moderno**: Interfaz elegante con colores cuidadosamente seleccionados
 - ⚡ **Optimización de rendimiento**: Precarga de assets y lazy loading
 - 🔧 **Arquitectura modular**: Componentes reutilizables y código mantenible
+- 📟 **Sensores del dispositivo**: Pantallas de Cámara y Acelerómetro con soporte multiplataforma
 
 ## 🛠️ Tecnologías y Librerías
 
@@ -27,6 +28,10 @@ Una aplicación móvil de portafolio personal desarrollada con React Native y Ex
 - **expo-asset** `~12.0.9` - Carga y caché optimizado de assets
 - **expo-splash-screen** `~31.0.10` - Control avanzado de la pantalla de carga
 - **expo-status-bar** `~2.2.3` - Configuración de la barra de estado
+
+### Sensores
+- **expo-camera** `SDK 54 compatible` - Acceso a la cámara (CameraView)
+- **expo-sensors** `SDK 54 compatible` - Acelerómetro (en nativo); fallback con DeviceMotion en Web
 
 ### Herramientas de Desarrollo
 - **@babel/core** `^7.20.0` - Transpilador de JavaScript
@@ -49,7 +54,9 @@ App2/
 │   ├── AboutMe.js
 │   ├── Project.js
 │   ├── Skills.js
-│   └── ResponsiveCards.js
+│   ├── ResponsiveCards.js
+│   ├── CameraSensor.js        # Cámara: preview, torch y captura
+│   └── AccelerometerSensor.js # Acelerómetro: bola interactiva + fondo dinámico
 ├── theme/                 # Sistema de diseño
 │   └── tokens.js          # Tokens de colores y espaciado
 ├── utils/                 # Utilidades y hooks
@@ -139,6 +146,20 @@ npm run optimize:images
 3. **Proyectos**: Showcase de proyectos realizados
 4. **Habilidades**: Lista de competencias técnicas
 5. **Tarjetas Responsivas**: Demostración de diseño adaptativo
+6. **Cámara (Sensor)**:
+   - Solicita permisos de cámara y muestra preview en vivo usando `CameraView`.
+   - Permite alternar entre cámara frontal/trasera y encender la linterna (torch) en dispositivos compatibles.
+   - Captura fotos y muestra una miniatura con opción para descartar.
+   - Notas:
+     - En Web, el control de linterna puede no estar disponible según el navegador.
+     - Permisos: iOS requiere `NSCameraUsageDescription`; Android requiere `CAMERA` (ya configurados en `app.json`).
+7. **Acelerómetro (Sensor)**:
+   - En Android/iOS usa `expo-sensors` para leer aceleración en x, y, z.
+   - En Web utiliza el evento `devicemotion` del navegador con permiso explícito cuando es necesario (iOS/Safari).
+   - Visual: una “bolita” que se desplaza dentro de un cuadro según la inclinación del dispositivo.
+   - Fondo de pantalla dinámico: cambia de color según el eje dominante y su dirección:
+     - X+ rojo, X- azul, Y+ naranja, Y- verde; fondo base cuando está casi plano.
+   - Controles: interruptor para pausar/reanudar y botones para ajustar el intervalo de actualización.
 
 ## 🎨 Sistema de Diseño
 
@@ -169,6 +190,15 @@ spacing: {
 - **Interfaz**: Tema claro como base
 - **Plataformas soportadas**: iOS, Android y Web
 - **Nueva arquitectura**: Habilitada para mejor rendimiento
+
+### Permisos de sensores
+- Cámara:
+  - iOS: `infoPlist.NSCameraUsageDescription` definido en `app.json`.
+  - Android: permiso `CAMERA` configurado en `app.json`.
+- Acelerómetro (Web): algunos navegadores requieren acción del usuario para habilitar `DeviceMotion`. La pantalla muestra un botón “Activar sensor (permiso)” cuando es necesario.
+
+### Notas de compatibilidad
+- Web puede limitar acceso a características de hardware (torch/flash, devicemotion). Prueba en dispositivo real para validar comportamiento.
 
 ## 📝 Licencia
 

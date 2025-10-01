@@ -13,6 +13,7 @@ export default function CameraSensor() {
   const [torchOn, setTorchOn] = useState(false); // torch (linterna)
   const [isCapturing, setIsCapturing] = useState(false);
   const [photoUri, setPhotoUri] = useState(null);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   useEffect(() => {
     (async () => {
@@ -35,6 +36,7 @@ export default function CameraSensor() {
       setIsCapturing(true);
       const photo = await cameraRef.current.takePictureAsync({ quality: 0.8, skipProcessing: true });
       setPhotoUri(photo?.uri ?? null);
+      if (photo?.uri) setIsPreviewOpen(true);
     } catch (e) {
       console.warn('Error al capturar foto', e);
     } finally {
@@ -80,9 +82,26 @@ export default function CameraSensor() {
       {photoUri && (
         <View style={styles.previewBar}>
           <Image source={{ uri: photoUri }} style={styles.preview} />
+          <TouchableOpacity onPress={() => setIsPreviewOpen(true)} style={styles.clearBtn}>
+            <Text style={styles.clearText}>Ver</Text>
+          </TouchableOpacity>
           <TouchableOpacity onPress={() => setPhotoUri(null)} style={styles.clearBtn}>
             <Text style={styles.clearText}>Descartar</Text>
           </TouchableOpacity>
+        </View>
+      )}
+
+      {isPreviewOpen && photoUri && (
+        <View style={styles.modal}>
+          <Image source={{ uri: photoUri }} style={styles.modalImage} resizeMode="contain" />
+          <View style={styles.modalActions}>
+            <TouchableOpacity onPress={() => setIsPreviewOpen(false)} style={styles.modalBtn}>
+              <Text style={styles.modalBtnText}>Cerrar</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => { setIsPreviewOpen(false); setPhotoUri(null); }} style={styles.modalBtn}>
+              <Text style={styles.modalBtnText}>Descartar</Text>
+            </TouchableOpacity>
+          </View>
         </View>
       )}
     </Screen>
@@ -143,4 +162,33 @@ const styles = StyleSheet.create({
   },
   clearText: { color: '#00c6cf', fontWeight: '600' },
   info: { color: '#e0e0e0', textAlign: 'center', padding: 24 },
+  modal: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.96)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 12,
+    zIndex: 10,
+  },
+  modalImage: {
+    width: '100%',
+    height: '80%',
+    borderRadius: 8,
+  },
+  modalActions: {
+    flexDirection: 'row',
+    gap: 12,
+    marginTop: 14,
+  },
+  modalBtn: {
+    backgroundColor: '#22232b',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 10,
+  },
+  modalBtnText: { color: '#00c6cf', fontWeight: '600' },
 });
