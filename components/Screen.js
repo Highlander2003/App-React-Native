@@ -2,7 +2,8 @@
 // - Aplica SafeArea para evitar solaparse con el notch/barras.
 // - Prop `scroll` permite pantallas con contenido largo (usa ScrollView).
 import React from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import useBreakpoint, { getContainerMaxWidth } from '../utils/useBreakpoint';
 
 export default function Screen({ children, scroll = false, contentStyle, style }) {

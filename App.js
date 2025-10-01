@@ -7,6 +7,8 @@ import AboutMe from './screens/AboutMe';
 import Project from './screens/Project';
 import ResponsiveCards from './screens/ResponsiveCards';
 import Skills from './screens/Skills';
+import CameraSensor from './screens/CameraSensor';
+import AccelerometerSensor from './screens/AccelerometerSensor';
 // Componentes reutilizables para mantener la UI consistente y simple
 import Screen from './components/Screen';
 import FadeInView from './components/FadeInView';
@@ -37,6 +39,8 @@ function HomeScreen({ navigation }) {
           { label: 'Proyectos', screen: 'Project' },
           { label: 'Habilidades', screen: 'Skills' },
           { label: 'Tarjetas Responsivas', screen: 'ResponsiveCards' },
+          { label: 'Cámara (Sensor)', screen: 'CameraSensor' },
+          { label: 'Acelerómetro (Sensor)', screen: 'AccelerometerSensor' },
         ].map((btn) => (
           // PrimaryButton aplica feedback de presión y estilo consistente
           <PrimaryButton key={btn.screen} label={btn.label} onPress={() => navigation.navigate(btn.screen)} />
@@ -60,6 +64,8 @@ export default function App() {
         <Stack.Screen name="Project" component={Project} options={{ title: 'Proyectos' }} />
         <Stack.Screen name="Skills" component={Skills} options={{ title: 'Habilidades' }} />
         <Stack.Screen name="ResponsiveCards" component={ResponsiveCards} options={{ title: 'Tarjetas' }} />
+        <Stack.Screen name="CameraSensor" component={CameraSensor} options={{ title: 'Cámara' }} />
+        <Stack.Screen name="AccelerometerSensor" component={AccelerometerSensor} options={{ title: 'Acelerómetro' }} />
       </Stack.Navigator>
     </NavigationContainer>
   );
